@@ -1,0 +1,11 @@
+{
+    "trailingComma": "all",
+    "printWidth": 120,
+    "doubleQuote": true,
+    "tabWidth": 4,
+    "useTabs": false,
+    "endOfLine": "lf",
+    "charset": "utf-8",
+    "trimTrailingWhitespace": true,
+    "insertFinalNewline": true
+}

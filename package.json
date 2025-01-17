@@ -1,0 +1,23 @@
+{
+    "name": "qewi",
+    "version": "0.0.1",
+    "description": "Discord.js plugin manager",
+    "author": "Kewwie <iamkewwie@gmail.com>",
+    "license": "Apache-2.0",
+    "main": "dist/index.js",
+    "typings": "dist/index.d.ts",
+    "scripts": {
+        "build": "tsc"
+    },
+    "homepage": "https://github.com/Kewwie/Qewi",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/Kewwie/Qewi.git"
+    },
+    "bugs": {
+        "url": "https://github.com/Kewwie/Qewi/issues"
+    },
+    "devDependencies": {
+        "typescript": "^2.0.3"
+    }
+  }
