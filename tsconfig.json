@@ -5,11 +5,11 @@
         "module": "ESNext",
         "moduleResolution": "bundler",
 
-        "strict": false,
-        "sourceMap": true,
+        "strict": true,
+        "sourceMap": false,
         "removeComments": false,
         "declaration": true,
-        "declarationMap": true
+        "declarationMap": false
     },
     "exclude": ["node_modules"]
 }
