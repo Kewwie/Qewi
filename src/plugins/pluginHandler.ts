@@ -1,12 +1,12 @@
 export class PluginHandler {
     public globalPlugins = new Map<string, Function>();
-    public guildPlugins = new Map<string, Map<string, Function>>();
+    public guildPlugins = new Map<string, Map<string, any>>();
 
-    private _getGuildPlugins(event: string): Map<string, Function> {
-        return this.guildPlugins.get(event) || new Map<string, Function>();
+    private _getGuildPlugin(id: string): Map<string, any> {
+        return this.guildPlugins.get(id) || new Map<string, any>();
     }
 
-    private _saveGuildPlugins(event: string, listeners: Map<string, Function>): void {
-        this.guildPlugins.set(event, listeners);
+    private _saveGuildPlugin(id: string, plugin: any): void {
+        this.guildPlugins.set(id, plugin);
     }
 }
