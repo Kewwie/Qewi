@@ -7,7 +7,8 @@
     "main": "dist/index.js",
     "typings": "dist/index.d.ts",
     "scripts": {
-        "build": "tsc"
+        "build": "tsc",
+        "start-link": "npm run build && npm link"
     },
     "homepage": "https://github.com/Kewwie/Qewi",
     "repository": {
