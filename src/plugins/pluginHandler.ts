@@ -14,7 +14,7 @@ export class PluginHandler {
         if (this.getGlobalPlugin(pluginId)) {
             throw new Error(`Plugin ${pluginId} is already loaded globally`);
         } else {
-            plugin.beforeLoad?.(plugin);
+            if (plugin.beforeLoad) plugin.beforeLoad(plugin);
             this.globalPlugins.set(pluginId, plugin);
         }
     }
@@ -22,7 +22,7 @@ export class PluginHandler {
     public unloadGlobalPlugin(pluginId: string): void {
         const plugin = this.getGlobalPlugin(pluginId);
         if (plugin) {
-            plugin.beforeUnload?.(plugin);
+            if (plugin.beforeUnload) plugin.beforeUnload(plugin);
             this.globalPlugins.delete(pluginId);
         } else {
             throw new Error(`Plugin ${pluginId} is not loaded globally`);
@@ -32,7 +32,11 @@ export class PluginHandler {
     /* Guild Plugins */
 
     private _getGuildPlugins(guildId: string): Map<string, Plugin> {
-        return this.guildPlugins.get(guildId) ?? new Map<string, Plugin>();
+        var pluginsMap = this.guildPlugins.get(guildId);
+        if (!pluginsMap) {
+            pluginsMap = new Map<string, Plugin>();
+        }
+        return pluginsMap;
     }
 
     private _getGuildPlugin(guildId: string, pluginId: string): Plugin | null {
@@ -45,10 +49,6 @@ export class PluginHandler {
         this.guildPlugins.set(guildId, guildPlugins);
     }
 
-    public getGuildPlugins(guildId: string): Map<string, Plugin> {
-        return this._getGuildPlugins(guildId);
-    }
-
     public getGuildPlugin(guildId: string, pluginId: string): Plugin | null {
         return this._getGuildPlugin(guildId, pluginId);
     }
@@ -57,7 +57,7 @@ export class PluginHandler {
         if (this._getGuildPlugin(guildId, pluginId)) {
             throw new Error(`Plugin ${pluginId} is already loaded in guild ${guildId}`);
         } else {
-            plugin.beforeLoad?.(plugin);
+            if (plugin.beforeLoad) plugin.beforeLoad(plugin);
             this._setGuildPlugin(guildId, pluginId, plugin);
         }
     }
@@ -65,7 +65,7 @@ export class PluginHandler {
     public unloadGuildPlugin(guildId: string, pluginId: string): void {
         const plugin = this._getGuildPlugin(guildId, pluginId);
         if (plugin) {
-            plugin.beforeUnload?.(plugin);
+            if (plugin.beforeUnload) plugin.beforeUnload(plugin);
             this._getGuildPlugins(guildId).delete(pluginId);
         } else {
             throw new Error(`Plugin ${pluginId} is not loaded in guild ${guildId}`);
