@@ -7,8 +7,10 @@ export interface Plugin {
     description?: string;
     type: PluginType;
 
-    defaultPremissions?: Array<PermissionResolvable>;
-    defaultData?: PluginData;
+    default: {
+        premissions: Array<PermissionResolvable>;
+        roles: Array<string>;
+    };
 
     commands?: Array<Command>;
     events?: Array<Event>;
