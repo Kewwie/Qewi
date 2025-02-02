@@ -1,58 +1,76 @@
-export class EventHandler {
-    public globalListeners = new Map<string, Function>();
-    public guildListeners = new Map<string, Map<string, Function>>();
+import { Qewi } from "../qewi";
+import { Event } from "./eventTypes";
 
-    private _getGlobalListener(eventId: string): Function | null {
+export class EventHandler {
+    public globalListeners = new Map<string, Event>();
+    public guildListeners = new Map<string, Map<string, Event>>();
+
+    private qewi: Qewi;
+    constructor(qewi: Qewi) {
+        this.qewi = qewi;
+    }
+
+    /* Global Events */
+
+    public getGlobalEvent(eventId: string): Event | null {
         return this.globalListeners.get(eventId) || null;
     }
 
-    private _saveGlobalListener(eventId: string, listener: Function): void {
-        this.globalListeners.set(eventId, listener);
+    public loadGlobalEvent(event: Event): void {
+        if (this.getGlobalEvent(event.id)) {
+            throw new Error(`Event ${event.id} is already loaded globally`);
+        } else {
+            this.globalListeners.set(event.id, event);
+        }
     }
 
-    private _deleteGlobalListener(eventId: string): void {
-        this.globalListeners.delete(eventId);
+    public unloadGlobalEvent(eventId: string): void {
+        const event = this.getGlobalEvent(eventId);
+        if (event) {
+            this.globalListeners.delete(eventId);
+        } else {
+            throw new Error(`Event ${eventId} is not loaded globally`);
+        }
     }
 
-    private _getGuildListeners(eventId: string): Map<string, Function> {
-        return this.guildListeners.get(eventId) || new Map<string, Function>();
+    /* Guild Events */
+
+    private _getGuildListeners(guildId: string): Map<string, Event> {
+        var eventsMap = this.guildListeners.get(guildId);
+        if (!eventsMap) {
+            eventsMap = new Map<string, Event>();
+        }
+        return eventsMap;
     }
 
-    private _saveGuildListeners(eventId: string, listeners: Map<string, Function>): void {
-        this.guildListeners.set(eventId, listeners);
+    private _getGuildListener(guildId: string, eventId: string): Event | null {
+        return this._getGuildListeners(guildId).get(eventId) || null;
     }
 
-    private _deleteGuildListeners(eventId: string): void {
-        this.guildListeners.delete(eventId);
+    private _setGuildListener(guildId: string, eventId: string, event: Event): void {
+        const guildEvents = this._getGuildListeners(guildId);
+        guildEvents.set(eventId, event);
+        this.guildListeners.set(guildId, guildEvents);
     }
 
-    private _getGuildListener(eventId: string, guildId: string): Function | null {
-        const listeners = this._getGuildListeners(eventId);
-        return listeners.get(guildId) || null;
+    public getGuildEvent(guildId: string, eventId: string): Event | null {
+        return this._getGuildListener(guildId, eventId);
     }
 
-    private _saveGuildListener(eventId: string, guildId: string, listener: Function): void {
-        const listeners = this._getGuildListeners(eventId);
-        listeners.set(guildId, listener);
-        this._saveGuildListeners(eventId, listeners);
+    public loadGuildEvent(guildId: string, event: Event): void {
+        if (this.getGuildEvent(guildId, event.id)) {
+            throw new Error(`Event ${event.id} is already loaded in guild ${guildId}`);
+        } else {
+            this._setGuildListener(guildId, event.id, event);
+        }
     }
 
-    private _deleteGuildListener(eventId: string, guildId: string): void {
-        const listeners = this._getGuildListeners(eventId);
-        listeners.delete(guildId);
-        this._saveGuildListeners(eventId, listeners);
-    }
-
-    /* PUBLIC FUNCTIONS */
-    public addGlobalListener(eventId: string, listener: Function): void {
-        this._saveGlobalListener(eventId, listener);
-    }
-
-    public addGuildListener(eventId: string, guildId: string, listener: Function): void {
-        this._saveGuildListener(eventId, guildId, listener);
-    }
-
-    public deleteGuildListener(eventId: string, id: string): void {
-        this._deleteGuildListener(eventId, id);
+    public unloadGuildEvent(guildId: string, eventId: string): void {
+        const event = this.getGuildEvent(guildId, eventId);
+        if (event) {
+            this._getGuildListeners(guildId).delete(eventId);
+        } else {
+            throw new Error(`Event ${eventId} is not loaded in guild ${guildId}`);
+        }
     }
 }

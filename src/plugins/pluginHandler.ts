@@ -1,8 +1,15 @@
+import { Qewi } from "../qewi";
 import { Plugin } from "./pluginTypes";
 
 export class PluginHandler {
     public globalPlugins = new Map<string, Plugin>();
     public guildPlugins = new Map<string, Map<string, Plugin>>();
+
+    private qewi: Qewi;
+
+    constructor(qewi: Qewi) {
+        this.qewi = qewi;
+    }
 
     /* Global Plugins */
 
@@ -15,6 +22,11 @@ export class PluginHandler {
             throw new Error(`Plugin ${pluginId} is already loaded globally`);
         } else {
             if (plugin.beforeLoad) plugin.beforeLoad(plugin);
+            if (plugin.events) {
+                for (const event of plugin.events) {
+                    this.qewi.eventHandler.loadGlobalEvent(event);
+                }
+            }
             this.globalPlugins.set(pluginId, plugin);
         }
     }
@@ -23,6 +35,11 @@ export class PluginHandler {
         const plugin = this.getGlobalPlugin(pluginId);
         if (plugin) {
             if (plugin.beforeUnload) plugin.beforeUnload(plugin);
+            if (plugin.events) {
+                for (const event of plugin.events) {
+                    this.qewi.eventHandler.unloadGlobalEvent(event.id);
+                }
+            }
             this.globalPlugins.delete(pluginId);
         } else {
             throw new Error(`Plugin ${pluginId} is not loaded globally`);

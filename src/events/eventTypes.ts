@@ -4,7 +4,7 @@ import { Plugin } from "../plugins/pluginTypes";
 type EventPayload = (qewi: Qewi, plugin: Plugin, event: Event, ...args: any) => Promise<void> | void;
 
 export interface Event {
-    name: string;
+    id: string;
     type: EventType;
 
     beforeEmit?: EventPayload;

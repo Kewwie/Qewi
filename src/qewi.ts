@@ -1,20 +1,27 @@
-import { EventEmitter } from "events";
 import { Client } from "discord.js";
 
 import { PluginHandler } from "./plugins/pluginHandler";
 import { Plugin } from "./plugins/pluginTypes";
 
-export class Qewi extends EventEmitter {
+import { EventHandler } from "./events/eventHandler";
+
+export interface QewiConfig {
+    prefix: string;
+}
+
+export class Qewi {
     public client: Client;
-    public config: any = {};
+    public config: QewiConfig;
 
-    public pluginHandler = new PluginHandler();
+    public pluginHandler: PluginHandler;
+    public eventHandler: EventHandler;
 
-    constructor(client: Client, config: any) {
-        super();
-
+    constructor(client: Client, config: QewiConfig) {
         this.client = client;
         this.config = config;
+
+        this.pluginHandler = new PluginHandler(this);
+        this.eventHandler = new EventHandler(this);
     }
 
     /* Plugin Handler */
