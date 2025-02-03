@@ -8,7 +8,8 @@
     "typings": "dist/index.d.ts",
     "scripts": {
         "build": "tsc",
-        "start-link": "npm run build && npm link"
+        "start-link": "npm run build && npm link",
+        "local-update": "nodemon --exec npm run start-link --watch src"
     },
     "homepage": "https://github.com/Kewwie/Qewi",
     "repository": {
@@ -19,6 +20,7 @@
         "url": "https://github.com/Kewwie/Qewi/issues"
     },
     "devDependencies": {
+        "nodemon": "^3.1.9",
         "typescript": "^5.7.2"
     },
     "dependencies": {
